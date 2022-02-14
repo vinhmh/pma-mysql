@@ -1,0 +1,30 @@
+version: "3"
+networks:
+  auctionbid:
+    external: true
+    driver: overlay
+services:
+  db_pma:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: my_secret_password
+      MYSQL_DATABASE: app_db
+      MYSQL_USER: db_user
+      MYSQL_PASSWORD: db_user_pass
+      DB_HOST: db_pma
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      - "auctionbid"
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: 'db_pma'
+      MYSQL_USERNAME: 'db_user'
+      MYSQL_ROOT_PASSWORD: 'db_user_pass'
+    ports:
+      - 8081:80
+    networks:
+      - "auctionbid"
+volumes:
+  dbdata:
